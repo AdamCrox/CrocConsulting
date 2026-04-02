@@ -934,7 +934,7 @@ function App() {
             <div>
               <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.08em", color: "rgba(255,255,255,0.3)", textTransform: "uppercase", marginBottom: 16 }}>Contact</p>
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                <a href="mailto:info@crocconsulting.com.au" style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", textDecoration: "none" }}>info@crocconsulting.com.au</a>
+                <a href="mailto:Adam.croxton@outlook.com" style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", textDecoration: "none" }}>Adam.croxton@outlook.com</a>
                 <span style={{ fontSize: 14, color: "rgba(255,255,255,0.5)" }}>+61 (0) 400 000 000</span>
                 <span style={{ fontSize: 14, color: "rgba(255,255,255,0.5)" }}>Brisbane, Australia</span>
               </div>

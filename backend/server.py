@@ -11,7 +11,7 @@ from typing import List, Optional, Any
 import uuid
 from datetime import datetime, timezone
 import shutil
-from emergentintegrations.llm.chat import LlmChat, UserMessage
+from openai import AsyncOpenAI
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -249,30 +249,34 @@ async def generate_ai_quote(request: AIGenerateRequest):
 7. CONTACT FOR QUERIES:
    Adam Croxton
    Croc Consulting
-   Email: info@crocconsulting.com.au
+   Email: Adam.croxton@outlook.com
    Phone: +61 (0) 400 000 000
    Brisbane, Australia
 
 Format this as a professional RFQ document ready to send to suppliers. Use clear sections and professional language. Do not use em dashes anywhere."""
 
     try:
-        api_key = os.environ.get('EMERGENT_LLM_KEY')
-        chat = LlmChat(
-            api_key=api_key,
-            session_id=f"rfq-{submission.get('id')}",
-            system_message="You are a professional procurement document generator for Croc Consulting, an MV/HV equipment procurement consultancy."
-        ).with_model("openai", "gpt-4o")
+        api_key = os.environ.get('OPENAI_API_KEY')
+        client = AsyncOpenAI(api_key=api_key)
         
-        user_message = UserMessage(text=prompt)
-        response = await chat.send_message(user_message)
+        response = await client.chat.completions.create(
+            model="gpt-4o",
+            max_tokens=1000,
+            messages=[
+                {"role": "system", "content": "You are a professional procurement document generator for Croc Consulting, an MV/HV equipment procurement consultancy."},
+                {"role": "user", "content": prompt}
+            ]
+        )
+        
+        ai_output = response.choices[0].message.content
         
         # Update the submission with AI output
         await db.submissions.update_one(
             {"id": request.submissionId},
-            {"$set": {"aiOutput": response}}
+            {"$set": {"aiOutput": ai_output}}
         )
         
-        return {"success": True, "output": response}
+        return {"success": True, "output": ai_output}
     except Exception as e:
         logging.error(f"AI generation error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
