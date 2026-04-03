@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
-// API Configuration - uses /api prefix which nginx proxies to backend
-const API_URL = process.env.REACT_APP_API_URL || "/api";
+// API Configuration - nginx proxies /api/ to backend
+const API_URL = "/api";
 
 // Color palette
 const B = "#0071E3", BD = "#0055B0", BL = "#E8F2FF", D = "#1D1D1F", G = "#86868B", LB = "#F5F5F7", CY = "#4FC3F7", PU = "#9C5CF5", GN = "#10B981", AM = "#F59E0B", RD = "#EF4444";

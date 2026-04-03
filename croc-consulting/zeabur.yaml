@@ -1,5 +1,4 @@
 # Zeabur Configuration for Croc Consulting
-# Deploy: Connect GitHub repo, Zeabur auto-detects services
 
 # Backend API Service
 backend:
@@ -16,9 +15,6 @@ backend:
     OPENAI_API_KEY:
       required: true
       description: "OpenAI API key for AI quote generation"
-    ALLOWED_ORIGINS:
-      default: "*"
-      description: "CORS allowed origins"
 
 # Frontend Web Service
 frontend:
@@ -28,6 +24,3 @@ frontend:
   port: 80
   domain:
     - crocconsulting.zeabur.app
-  env:
-    REACT_APP_API_URL:
-      default: "/api"

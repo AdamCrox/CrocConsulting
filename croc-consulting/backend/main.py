@@ -41,10 +41,10 @@ async def lifespan(app: FastAPI):
 # FastAPI app
 app = FastAPI(title="Croc Consulting API", lifespan=lifespan)
 
-# CORS
+# CORS - allow all origins for now
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
