@@ -1,0 +1,21 @@
+# Zeabur Configuration for Croc Consulting
+# Flat structure: backend/ and frontend/ at repo root
+
+backend:
+  source: ./backend
+  type: dockerfile
+  dockerfile: Dockerfile
+  port: 8000
+  env:
+    MONGODB_URI:
+      required: true
+    DATABASE_NAME:
+      default: "croc_consulting"
+    OPENAI_API_KEY:
+      required: true
+
+frontend:
+  source: ./frontend
+  type: dockerfile
+  dockerfile: Dockerfile
+  port: 80

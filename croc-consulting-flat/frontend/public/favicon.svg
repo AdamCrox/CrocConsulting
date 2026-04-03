@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="crocGrad" x1="50" y1="0" x2="50" y2="100" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4FC3F7"/>
+      <stop offset="50%" stop-color="#7C8FF5"/>
+      <stop offset="100%" stop-color="#9C5CF5"/>
+    </linearGradient>
+  </defs>
+  <path d="M58 8 C30 8,6 28,6 50 C6 72,30 92,58 92 L44 74 C28 72,20 62,20 50 C20 38,28 28,44 26Z" fill="url(#crocGrad)"/>
+  <path d="M52 30 C38 32,32 40,32 50 C32 60,38 68,52 70 L44 60 C40 58,38 54,38 50 C38 46,40 42,44 40Z" fill="white" fill-opacity="0.93"/>
+</svg>
