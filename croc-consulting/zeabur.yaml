@@ -1,39 +1,33 @@
 # Zeabur Configuration for Croc Consulting
-# This file auto-configures services and environment variables
+# Deploy: Connect GitHub repo, Zeabur auto-detects services
 
-services:
-  # Frontend Service
-  frontend:
-    root: frontend
-    type: docker
-    ports:
-      - 80
-    env:
-      REACT_APP_API_URL:
-        default: "/api"
-        description: "API URL prefix (use /api for nginx proxy)"
-    
-  # Backend Service  
-  backend:
-    root: backend
-    type: docker
-    ports:
-      - 8000
-    env:
-      MONGODB_URI:
-        link: mongodb
-        description: "MongoDB connection string (auto-linked from MongoDB add-on)"
-      DATABASE_NAME:
-        default: "croc_consulting"
-        description: "MongoDB database name"
-      OPENAI_API_KEY:
-        required: true
-        description: "OpenAI API key for AI quote generation"
-      ALLOWED_ORIGINS:
-        required: true
-        description: "Comma-separated list of allowed CORS origins (e.g., https://crocconsulting.com.au)"
+# Backend API Service
+backend:
+  source: ./backend
+  type: dockerfile
+  dockerfile: Dockerfile
+  port: 8000
+  env:
+    MONGODB_URI:
+      required: true
+      description: "MongoDB connection URI (from Zeabur MongoDB addon)"
+    DATABASE_NAME:
+      default: "croc_consulting"
+    OPENAI_API_KEY:
+      required: true
+      description: "OpenAI API key for AI quote generation"
+    ALLOWED_ORIGINS:
+      default: "*"
+      description: "CORS allowed origins"
 
-# MongoDB Add-on
-addons:
-  mongodb:
-    type: mongodb
+# Frontend Web Service
+frontend:
+  source: ./frontend
+  type: dockerfile
+  dockerfile: Dockerfile
+  port: 80
+  domain:
+    - crocconsulting.zeabur.app
+  env:
+    REACT_APP_API_URL:
+      default: "/api"
