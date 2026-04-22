@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* shadcn/ui CSS variables — Apple light theme */
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 211 100% 45%;       /* #0071E3 Apple blue */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 211 100% 45%;
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-white text-apple-text-primary antialiased;
+    font-family: -apple-system, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background: #0071E3;
+    color: #fff;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-full bg-apple-blue px-7 py-3 text-sm font-semibold text-white transition-all hover:bg-apple-blue-hover active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
+    min-height: 48px;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-full border border-apple-border bg-white px-7 py-3 text-sm font-semibold text-apple-text-primary transition-all hover:bg-apple-surface active:scale-95;
+    min-height: 48px;
+  }
+
+  .card-apple {
+    @apply rounded-2xl bg-white shadow-[0_2px_12px_rgba(0,0,0,0.08)] border border-apple-border;
+  }
+
+  .section-title {
+    @apply text-4xl font-bold tracking-tight text-apple-text-primary md:text-5xl;
+  }
+
+  .section-subtitle {
+    @apply text-xl text-apple-text-secondary;
+  }
+
+  .nav-glass {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.85);
+  }
+}
