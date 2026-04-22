@@ -4,7 +4,7 @@ import AdminSubmissionsClient from "@/components/AdminSubmissionsClient";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function AdminSubmissionsPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user || user.app_metadata?.role !== "admin") redirect("/admin");

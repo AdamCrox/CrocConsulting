@@ -4,7 +4,7 @@ import AdminQuotesClient from "@/components/AdminQuotesClient";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function AdminQuotesPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user || user.app_metadata?.role !== "admin") redirect("/admin");
