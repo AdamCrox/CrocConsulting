@@ -14,5 +14,5 @@ export async function GET(request) {
     }
   }
 
-  return NextResponse.redirect(`${origin}/quote?error=auth`);
+  return NextResponse.redirect(`${origin}/quote`);
 }
