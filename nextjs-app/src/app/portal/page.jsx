@@ -79,13 +79,13 @@ export default function PortalLoginPage() {
 
             <div className="mt-8 pt-6 border-t border-apple-border text-center">
               <p className="text-[13px] text-apple-text-secondary">
-                Don't have an account?{" "}
+                New client?{" "}
                 <Link href="/quote" className="text-apple-blue hover:underline">
                   Submit a quote request
                 </Link>
               </p>
               <p className="text-[13px] text-apple-text-secondary mt-2">
-                Your login credentials are provided by CrocConsulting after your quote is accepted.
+                Use the same email and password you created when submitting your quote.
               </p>
             </div>
           </div>

@@ -74,6 +74,7 @@ export default function QuoteDetailsPage() {
           ...form,
           quantity: parseInt(form.quantity) || null,
           details: {
+            description: form.description,
             timeframe: form.timeframe,
             standards: form.standards,
             site_location: form.site_location,
