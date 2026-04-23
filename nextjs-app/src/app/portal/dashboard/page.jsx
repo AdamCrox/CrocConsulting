@@ -4,13 +4,8 @@ import { createClient } from "@/lib/supabase/server";
 import LogoutButton from "@/components/LogoutButton";
 
 const STAGE_NAMES = [
-  "Quote Received",
-  "Initial Review",
-  "Supplier Outreach",
-  "Quotes Gathered",
-  "Engineering Review",
-  "Quote Prepared",
-  "Quote Delivered",
+  "Quote Received", "Initial Review", "Supplier Outreach",
+  "Quotes Gathered", "Engineering Review", "Quote Prepared", "Quote Delivered",
 ];
 
 function ProgressTracker({ stages, currentStage }) {
@@ -21,7 +16,6 @@ function ProgressTracker({ stages, currentStage }) {
         const stageData = stages?.find((s) => s.stage_number === stageNum);
         const done = stageData?.completed ?? false;
         const active = stageNum === currentStage && !done;
-
         return (
           <div key={stageNum} className="flex items-start gap-4" style={{ opacity: stageNum > currentStage ? 0.35 : 1 }}>
             <div className="flex flex-col items-center">
@@ -75,15 +69,24 @@ export default async function DashboardPage() {
     .eq("email", user.email)
     .single();
 
-  const { data: quotes } = await supabase
+  const { data: quotes } = clientData ? await supabase
     .from("quotes")
     .select("*, submissions(*), quote_stages(*)")
-    .eq("client_id", clientData?.id ?? "")
+    .eq("client_id", clientData.id)
+    .order("created_at", { ascending: false }) : { data: [] };
+
+  // Also fetch any pending submissions for this user (submitted but not yet approved)
+  const { data: pendingSubmissions } = await supabase
+    .from("submissions")
+    .select("*")
+    .eq("email", user.email)
+    .eq("status", "pending")
     .order("created_at", { ascending: false });
+
+  const displayName = clientData?.name ?? clientData?.company ?? user.email;
 
   return (
     <div className="min-h-screen bg-apple-surface">
-      {/* Nav */}
       <nav className="sticky top-0 z-50 h-14 nav-glass border-b border-apple-border">
         <div className="max-w-4xl mx-auto px-8 h-full flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 no-underline">
@@ -98,29 +101,48 @@ export default async function DashboardPage() {
       </nav>
 
       <div className="max-w-4xl mx-auto px-8 py-12">
-        <div className="mb-10">
-          <p className="text-[13px] text-apple-text-secondary mb-1">Welcome back</p>
-          <h1 className="text-[32px] font-bold text-apple-text-primary tracking-tight">
-            {clientData?.name ?? clientData?.company ?? "Client Portal"}
-          </h1>
+        <div className="flex items-center justify-between mb-10">
+          <div>
+            <p className="text-[13px] text-apple-text-secondary mb-1">Welcome back</p>
+            <h1 className="text-[32px] font-bold text-apple-text-primary tracking-tight">{displayName}</h1>
+          </div>
+          <Link href="/quote" className="btn-primary !text-[13px] !px-5 !py-2.5 !min-h-0">
+            + New quote
+          </Link>
         </div>
 
-        {!quotes || quotes.length === 0 ? (
-          <div className="card-apple p-12 text-center">
-            <p className="text-[17px] text-apple-text-secondary mb-6">No active quotes yet.</p>
-            <Link href="/quote" className="btn-primary">Submit a quote request</Link>
+        {/* Pending submissions — awaiting admin review */}
+        {pendingSubmissions && pendingSubmissions.length > 0 && (
+          <div className="mb-6 space-y-4">
+            {pendingSubmissions.map((sub) => (
+              <div key={sub.id} className="card-apple p-6 border-l-4 border-amber-400">
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="text-[11px] font-bold uppercase tracking-widest text-amber-700 bg-amber-50 px-3 py-1 rounded-full">
+                    Under Review
+                  </span>
+                </div>
+                <h3 className="text-[17px] font-semibold text-apple-text-primary">
+                  {sub.equipment_type ?? "Quote request"}{sub.voltage_level ? ` — ${sub.voltage_level}` : ""}
+                </h3>
+                <p className="text-[13px] text-apple-text-secondary mt-1">
+                  Submitted {new Date(sub.created_at).toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" })} · We will review and respond within one business day.
+                </p>
+              </div>
+            ))}
           </div>
-        ) : (
+        )}
+
+        {/* Active quotes */}
+        {quotes && quotes.length > 0 ? (
           <div className="space-y-6">
             {quotes.map((quote) => {
               const sub = quote.submissions;
               return (
                 <div key={quote.id} className="card-apple overflow-hidden">
-                  {/* Quote header */}
                   <div className="p-8 border-b border-apple-border">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                       <div>
-                        <div className="flex items-center gap-3 mb-2">
+                        <div className="flex items-center gap-3 mb-2 flex-wrap">
                           <span className="text-[11px] font-bold tracking-widest uppercase text-apple-blue bg-blue-50 px-3 py-1 rounded-full">
                             Stage {quote.current_stage} of 7
                           </span>
@@ -135,13 +157,11 @@ export default async function DashboardPage() {
                           {sub?.voltage_level && ` — ${sub.voltage_level}`}
                         </h2>
                         <p className="text-[14px] text-apple-text-secondary mt-1">
-                          Submitted {new Date(quote.created_at).toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" })}
+                          Accepted {new Date(quote.created_at).toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" })}
                         </p>
                       </div>
                     </div>
                   </div>
-
-                  {/* Progress tracker */}
                   <div className="p-8">
                     <ProgressTracker stages={quote.quote_stages} currentStage={quote.current_stage} />
                   </div>
@@ -149,6 +169,13 @@ export default async function DashboardPage() {
               );
             })}
           </div>
+        ) : (
+          !pendingSubmissions?.length && (
+            <div className="card-apple p-12 text-center">
+              <p className="text-[17px] text-apple-text-secondary mb-6">No quotes yet.</p>
+              <Link href="/quote" className="btn-primary">Submit a quote request</Link>
+            </div>
+          )
         )}
       </div>
     </div>
