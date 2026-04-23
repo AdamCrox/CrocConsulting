@@ -11,7 +11,7 @@ const EQUIPMENT_TYPES = [
 ];
 
 const VOLTAGE_LEVELS = [
-  "LV (<1 kV)", "MV (1–36 kV)", "HV (36–150 kV)", "EHV (>150 kV)",
+  "11 kV", "33 kV", "66 kV", "132 kV", "275 kV", "330 kV",
 ];
 
 export default function QuoteDetailsPage() {
