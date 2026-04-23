@@ -16,21 +16,30 @@ export default function QuotePage() {
     setLoading(true);
     setError("");
 
-    const supabase = createClient();
+    try {
+      const supabase = createClient();
 
-    // Try sign in first (returning user), then sign up (new user)
-    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
 
-    if (signInError) {
-      const { error: signUpError } = await supabase.auth.signUp({ email, password });
-      if (signUpError) {
-        setError(signUpError.message);
-        setLoading(false);
-        return;
+      if (signInError) {
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({ email, password });
+        if (signUpError) {
+          setError(signUpError.message);
+          setLoading(false);
+          return;
+        }
+        if (!signUpData.session) {
+          setError("This email is already registered. Please use the password you created previously, or track your existing quote below.");
+          setLoading(false);
+          return;
+        }
       }
-    }
 
-    router.push("/quote/details");
+      router.push("/quote/details");
+    } catch {
+      setError("Something went wrong. Please try again.");
+      setLoading(false);
+    }
   };
 
   const inputClass = "w-full px-4 py-3 rounded-xl border border-apple-border bg-apple-surface text-[15px] text-apple-text-primary placeholder:text-apple-text-secondary focus:outline-none focus:border-apple-blue transition-colors";
@@ -92,10 +101,16 @@ export default function QuotePage() {
             </button>
           </form>
 
-          <p className="text-[13px] text-apple-text-secondary mt-6 text-center">
-            Already submitted a quote?{" "}
-            <Link href="/portal" className="text-apple-blue hover:underline">Track its progress</Link>
-          </p>
+          <div className="mt-8 pt-6 border-t border-apple-border">
+            <p className="text-[13px] text-apple-text-secondary text-center mb-3">Already submitted a quote?</p>
+            <Link href="/portal" className="flex items-center justify-center gap-2 w-full px-5 py-3 rounded-xl border border-apple-border bg-apple-surface text-[14px] font-medium text-apple-text-primary hover:border-apple-blue hover:text-apple-blue transition-colors no-underline">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <circle cx="8" cy="5" r="2.5" stroke="currentColor" strokeWidth="1.5" />
+                <path d="M3 14c0-3 2-5 5-5s5 2 5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
+              Sign in to track your quote progress
+            </Link>
+          </div>
         </div>
       </div>
     </div>
